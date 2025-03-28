@@ -1,6 +1,11 @@
 package ch.bbw.pr.tresorbackend.service;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
+
+import java.security.SecureRandom;
+import java.util.Base64;
 
 /**
  * PasswordEncryptionService
@@ -8,14 +13,32 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class PasswordEncryptionService {
-   //todo ergänzen!
-
-   public PasswordEncryptionService() {
-      //todo anpassen!
-   }
-
-   public String hashPassword(String password) {
-      //todo anpassen!
-      return password;
-   }
+    @Value("${password.pepper}")
+    private String pepper; 
+    
+    private final SecureRandom secureRandom;
+    
+    public PasswordEncryptionService() {
+        this.secureRandom = new SecureRandom();
+    }
+    
+    /**
+     * Hashe das Passwort mit BCrypt und "salt" und "pepper"
+     */
+    public String hashPassword(String password) {
+        String pepperedPassword = password + pepper;
+        
+        String salt = BCrypt.gensalt(12);
+        
+        return BCrypt.hashpw(pepperedPassword, salt);
+    }
+    
+    /**
+     * Verifiziere das Passwort gegen ein Hash
+     */
+    public boolean verifyPassword(String password, String hashedPassword) {
+        String pepperedPassword = password + pepper;
+        
+        return BCrypt.checkpw(pepperedPassword, hashedPassword);
+    }
 }

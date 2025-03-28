@@ -2,6 +2,7 @@ package ch.bbw.pr.tresorbackend.controller;
 
 import ch.bbw.pr.tresorbackend.model.ConfigProperties;
 import ch.bbw.pr.tresorbackend.model.EmailAdress;
+import ch.bbw.pr.tresorbackend.model.LoginRequest;
 import ch.bbw.pr.tresorbackend.model.RegisterUser;
 import ch.bbw.pr.tresorbackend.model.User;
 import ch.bbw.pr.tresorbackend.service.PasswordEncryptionService;
@@ -135,13 +136,58 @@ public class UserController {
       return new ResponseEntity<>("User successfully deleted!", HttpStatus.OK);
    }
 
+   @CrossOrigin(origins = "${CROSS_ORIGIN}")
+   @PostMapping("/login")
+   public ResponseEntity<String> login(@Valid @RequestBody LoginRequest loginRequest, BindingResult bindingResult) {
+      // Input validation
+      if (bindingResult.hasErrors()) {
+         List<String> errors = bindingResult.getFieldErrors().stream()
+               .map(fieldError -> fieldError.getField() + ": " + fieldError.getDefaultMessage())
+               .collect(Collectors.toList());
+
+         JsonArray arr = new JsonArray();
+         errors.forEach(arr::add);
+         JsonObject obj = new JsonObject();
+         obj.add("message", arr);
+         String json = new Gson().toJson(obj);
+
+         logger.warn("Login validation failed: " + json);
+         return ResponseEntity.badRequest().body(json);
+      }
+
+      // Find user by email
+      User user = userService.findByEmail(loginRequest.getEmail());
+      if (user == null) {
+         JsonObject obj = new JsonObject();
+         obj.addProperty("message", "Invalid credentials");
+         String json = new Gson().toJson(obj);
+         logger.warn("Login failed: User not found with email: " + loginRequest.getEmail());
+         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(json);
+      }
+
+      // Verify password
+      if (!passwordService.verifyPassword(loginRequest.getPassword(), user.getPassword())) {
+         JsonObject obj = new JsonObject();
+         obj.addProperty("message", "Invalid credentials");
+         String json = new Gson().toJson(obj);
+         logger.warn("Login failed: Invalid password for user: " + loginRequest.getEmail());
+         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(json);
+      }
+
+      // Login successful
+      JsonObject obj = new JsonObject();
+      obj.addProperty("message", "Login successful");
+      obj.addProperty("userId", user.getId());
+      String json = new Gson().toJson(obj);
+      logger.info("Login successful for user: " + loginRequest.getEmail());
+      return ResponseEntity.ok(json);
+   }
 
    // get user id by email
    @CrossOrigin(origins = "${CROSS_ORIGIN}")
    @PostMapping("/byemail")
    public ResponseEntity<String> getUserIdByEmail(@RequestBody EmailAdress email, BindingResult bindingResult) {
       System.out.println("UserController.getUserIdByEmail: " + email);
-      //input validation
       if (bindingResult.hasErrors()) {
          List<String> errors = bindingResult.getFieldErrors().stream()
                .map(fieldError -> fieldError.getField() + ": " + fieldError.getDefaultMessage())
@@ -155,26 +201,31 @@ public class UserController {
          String json = new Gson().toJson(obj);
 
          System.out.println("UserController.createUser, validation fails: " + json);
+
          return ResponseEntity.badRequest().body(json);
       }
-
-      System.out.println("UserController.getUserIdByEmail: input validation passed");
 
       User user = userService.findByEmail(email.getEmail());
       if (user == null) {
          System.out.println("UserController.getUserIdByEmail, no user found with email: " + email);
+
          JsonObject obj = new JsonObject();
          obj.addProperty("message", "No user found with this email");
          String json = new Gson().toJson(obj);
 
          System.out.println("UserController.getUserIdByEmail, fails: " + json);
+
          return ResponseEntity.badRequest().body(json);
       }
+      
       System.out.println("UserController.getUserIdByEmail, user find by email");
+
       JsonObject obj = new JsonObject();
       obj.addProperty("answer", user.getId());
       String json = new Gson().toJson(obj);
+
       System.out.println("UserController.getUserIdByEmail " + json);
+
       return ResponseEntity.accepted().body(json);
    }
 
