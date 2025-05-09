@@ -102,23 +102,4 @@ public class SecretController {
                     .body("{\"message\": \"Error deleting secret\"}");
         }
     }
-      //save secret in db
-      secretService.createSecret(secret);
-      System.out.println("SecretController.updateSecret, secret updated in db");
-      JsonObject obj = new JsonObject();
-      obj.addProperty("answer", "Secret updated");
-      String json = new Gson().toJson(obj);
-      System.out.println("SecretController.updateSecret " + json);
-      return ResponseEntity.accepted().body(json);
-   }
-
-   // Build Delete Secret REST API
-   @CrossOrigin(origins = "${CROSS_ORIGIN}")
-   @DeleteMapping("{id}")
-   public ResponseEntity<String> deleteSecret(@PathVariable("id") Long secretId) {
-      //todo: Some kind of brute force delete, perhaps test first userid and encryptpassword
-      secretService.deleteSecret(secretId);
-      System.out.println("SecretController.deleteSecret succesfully: " + secretId);
-      return new ResponseEntity<>("Secret successfully deleted!", HttpStatus.OK);
-   }
 }
