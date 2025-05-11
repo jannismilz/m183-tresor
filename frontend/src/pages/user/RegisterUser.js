@@ -20,25 +20,43 @@ function RegisterUser({loginValues, setLoginValues}) {
     const [credentials, setCredentials] = useState(initialState);
     const [errorMessage, setErrorMessage] = useState('');
 
+    const [isLoading, setIsLoading] = useState(false);
+    
     const handleSubmit = async (e) => {
         e.preventDefault();
         setErrorMessage('');
+        setIsLoading(true);
 
-        //validate
+        // Validate password match
         if(credentials.password !== credentials.passwordConfirmation) {
             console.log("password != passwordConfirmation");
             setErrorMessage('Password and password-confirmation are not equal.');
+            setIsLoading(false);
+            return;
+        }
+        
+        // Validate password strength
+        if(credentials.password.length < 8) {
+            setErrorMessage('Password must be at least 8 characters long.');
+            setIsLoading(false);
             return;
         }
 
         try {
-            await postUser(credentials);
-            setLoginValues({userName: credentials.email, password: credentials.password});
+            const response = await postUser(credentials);
+            console.log('Registration successful:', response);
+            
+            // Set login values for automatic login after registration
+            setLoginValues({email: credentials.email, password: credentials.password});
             setCredentials(initialState);
-            navigate('/');
+            
+            // Redirect to login page
+            navigate('/user/login');
         } catch (error) {
-            console.error('Failed to fetch to server:', error.message);
+            console.error('Failed to register:', error.message);
             setErrorMessage(error.message);
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -86,7 +104,7 @@ function RegisterUser({loginValues, setLoginValues}) {
                         <div>
                             <label>Password:</label>
                             <input
-                                type="text"
+                                type="password"
                                 value={credentials.password}
                                 onChange={(e) =>
                                     setCredentials(prevValues => ({...prevValues, password: e.target.value}))}
@@ -97,7 +115,7 @@ function RegisterUser({loginValues, setLoginValues}) {
                         <div>
                             <label>Password confirmation:</label>
                             <input
-                                type="text"
+                                type="password"
                                 value={credentials.passwordConfirmation}
                                 onChange={(e) =>
                                     setCredentials(prevValues => ({...prevValues, passwordConfirmation: e.target.value}))}
@@ -107,8 +125,11 @@ function RegisterUser({loginValues, setLoginValues}) {
                         </div>
                     </aside>
                 </section>
-                <button type="submit">Register</button>
+                <button type="submit" disabled={isLoading}>
+                    {isLoading ? 'Registering...' : 'Register'}
+                </button>
                 {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
+                <p>Already have an account? <a href="/user/login">Login here</a></p>
             </form>
         </div>
     );
