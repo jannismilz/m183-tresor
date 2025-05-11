@@ -1,40 +1,51 @@
 import '../../App.css';
 import React, {useEffect, useState} from 'react';
 import {getSecretsforUser} from "../../comunication/FetchSecrets";
+import { useAuth } from "../../context/AuthContext";
 
 /**
  * Secrets
  * @author Peter Rutschmann
  */
-const Secrets = ({loginValues}) => {
+const Secrets = () => {
+    const { userId, isAuthenticated } = useAuth();
     const [secrets, setSecrets] = useState([]);
     const [errorMessage, setErrorMessage] = useState('');
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         const fetchSecrets = async () => {
             setErrorMessage('');
-            if( ! loginValues.email){
-                console.error('Secrets: No valid email, please do login first:' + loginValues);
-                setErrorMessage("No valid email, please do login first.");
-            } else {
-                try {
-                    const data = await getSecretsforUser(loginValues);
-                    console.log(data);
-                    setSecrets(data);
-                } catch (error) {
-                    console.error('Failed to fetch to server:', error.message);
-                    setErrorMessage(error.message);
-                }
+            setLoading(true);
+            
+            if (!isAuthenticated || !userId) {
+                console.error('Secrets: Not authenticated, please login first');
+                setErrorMessage("You must be logged in to view secrets.");
+                setLoading(false);
+                return;
+            }
+            
+            try {
+                const data = await getSecretsforUser(userId);
+                console.log('Fetched secrets:', data);
+                setSecrets(data);
+            } catch (error) {
+                console.error('Failed to fetch secrets:', error.message);
+                setErrorMessage(error.message || 'Failed to fetch secrets');
+            } finally {
+                setLoading(false);
             }
         };
+        
         fetchSecrets();
-    }, [loginValues]);
+    }, [userId, isAuthenticated]);
 
     return (
         <>
-            <h1>my secrets</h1>
+            <h1>My Secrets</h1>
             {errorMessage && <p style={{color: 'red'}}>{errorMessage}</p>}
-             <form>
+            {loading ? <p>Loading secrets...</p> : (
+            <form>
                 <h2>secrets</h2>
                 <table border="1">
                     <thead>
@@ -63,6 +74,7 @@ const Secrets = ({loginValues}) => {
                     </tbody>
                 </table>
             </form>
+            )}
         </>
     );
 };

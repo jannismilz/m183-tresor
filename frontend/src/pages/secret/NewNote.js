@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {postSecret} from "../../comunication/FetchSecrets";
+import { postSecret } from "../../comunication/FetchSecrets";
+import { useAuth } from "../../context/AuthContext";
 
 /**
  * NewNote
  * @author Peter Rutschmann
  */
-function NewNote({loginValues}) {
+function NewNote() {
+    const { userId } = useAuth();
     const initialState = {
         kindid: 3,
         kind:"note",
@@ -21,13 +23,19 @@ function NewNote({loginValues}) {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setErrorMessage('');
+        
+        if (!userId) {
+            setErrorMessage('You must be logged in to create a secret');
+            return;
+        }
+        
         try {
             const content = noteValues;
-            await postSecret({loginValues, content});
+            await postSecret({ userId, content });
             setNoteValues(initialState);
             navigate('/secret/secrets');
         } catch (error) {
-            console.error('Failed to fetch to server:', error.message);
+            console.error('Failed to create secret:', error.message);
             setErrorMessage(error.message);
         }
     };

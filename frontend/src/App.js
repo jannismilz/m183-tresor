@@ -48,10 +48,10 @@ function App() {
                     <Route path="/user/users" element={<Users loginValues={loginValues}/>}/>
                     <Route path="/user/login" element={<LoginUser loginValues={loginValues} setLoginValues={setLoginValues}/>}/>
                     <Route path="/user/register" element={<RegisterUser loginValues={loginValues} setLoginValues={setLoginValues}/>}/>
-                    <Route path="/secret/secrets" element={<ProtectedRoute><Secrets loginValues={loginValues}/></ProtectedRoute>}/>
-                    <Route path="/secret/newcredential" element={<ProtectedRoute><NewCredential loginValues={loginValues}/></ProtectedRoute>}/>
-                    <Route path="/secret/newcreditcard" element={<ProtectedRoute><NewCreditCard loginValues={loginValues}/></ProtectedRoute>}/>
-                    <Route path="/secret/newnote" element={<ProtectedRoute><NewNote loginValues={loginValues}/></ProtectedRoute>}/>
+                    <Route path="/secret/secrets" element={<ProtectedRoute><Secrets /></ProtectedRoute>}/>
+                    <Route path="/secret/newcredential" element={<ProtectedRoute><NewCredential /></ProtectedRoute>}/>
+                    <Route path="/secret/newcreditcard" element={<ProtectedRoute><NewCreditCard /></ProtectedRoute>}/>
+                    <Route path="/secret/newnote" element={<ProtectedRoute><NewNote /></ProtectedRoute>}/>
                     <Route path="*" element={<NoPage/>}/>
                 </Route>
             </Routes>

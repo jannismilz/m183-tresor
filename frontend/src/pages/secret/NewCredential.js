@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {postSecret} from "../../comunication/FetchSecrets";
+import { postSecret } from "../../comunication/FetchSecrets";
+import { useAuth } from "../../context/AuthContext";
 
 /**
  * NewCredential
  * @author Peter Rutschmann
  */
-function NewCredential({loginValues}) {
+function NewCredential() {
+    const { userId } = useAuth();
     const initialState = {
         kindid: 1,
         kind:"credential",
@@ -22,14 +24,19 @@ function NewCredential({loginValues}) {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setErrorMessage('');
-        console.log(loginValues)
+        
+        if (!userId) {
+            setErrorMessage('You must be logged in to create a secret');
+            return;
+        }
+        
         try {
             const content = credentialValues;
-            await postSecret({loginValues, content});
+            await postSecret({ userId, content });
             setCredentialValues(initialState);
             navigate('/secret/secrets');
         } catch (error) {
-            console.error('Failed to fetch to server:', error.message);
+            console.error('Failed to create secret:', error.message);
             setErrorMessage(error.message);
         }
     };
@@ -54,7 +61,7 @@ function NewCredential({loginValues}) {
                         <div>
                             <label>password:</label>
                             <input
-                                type="text"
+                                type="password"
                                 value={credentialValues.password}
                                 onChange={(e) =>
                                     setCredentialValues(prevValues => ({...prevValues, password: e.target.value}))}
