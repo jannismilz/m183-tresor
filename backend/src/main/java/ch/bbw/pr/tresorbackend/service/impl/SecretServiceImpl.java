@@ -38,7 +38,8 @@ public class SecretServiceImpl implements SecretService {
                 throw new RuntimeException("User not found");
             }
 
-            // Encrypt the content
+            // Encrypt the content using the user's password
+            // This will store both the encrypted content and key data together
             String encryptedContent = encryptionService.encrypt(secret.getContent(), user.getPassword());
             secret.setContent(encryptedContent);
 
@@ -65,7 +66,8 @@ public class SecretServiceImpl implements SecretService {
                 throw new RuntimeException("User not found");
             }
 
-            // Decrypt the content
+            // Decrypt the content using the user's password
+            // The key data is stored with the encrypted content
             String decryptedContent = encryptionService.decrypt(secret.getContent(), user.getPassword());
             secret.setContent(decryptedContent);
 
@@ -98,7 +100,8 @@ public class SecretServiceImpl implements SecretService {
                 throw new RuntimeException("User not found");
             }
 
-            // Encrypt the new content
+            // Encrypt the new content using the user's password
+            // This will store both the encrypted content and key data together
             String encryptedContent = encryptionService.encrypt(secret.getContent(), user.getPassword());
             existingSecret.setContent(encryptedContent);
 
@@ -128,6 +131,8 @@ public class SecretServiceImpl implements SecretService {
 
             // Decrypt all secrets
             for (Secret secret : encryptedSecrets) {
+                // Decrypt the content using the user's password
+                // The key data is stored with the encrypted content
                 String decryptedContent = encryptionService.decrypt(secret.getContent(), user.getPassword());
                 Secret decryptedSecret = new Secret(
                         secret.getId(),
