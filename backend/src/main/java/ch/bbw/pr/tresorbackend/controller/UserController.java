@@ -54,12 +54,8 @@ public class UserController {
    @CrossOrigin(origins = "${CROSS_ORIGIN}")
    @PostMapping
    public ResponseEntity<String> createUser(@Valid @RequestBody RegisterUser registerUser, BindingResult bindingResult) {
-      //captcha
-      //todo ergänzen
-
       System.out.println("UserController.createUser: captcha passed.");
 
-      //input validation
       if (bindingResult.hasErrors()) {
          List<String> errors = bindingResult.getFieldErrors().stream()
                .map(fieldError -> fieldError.getField() + ": " + fieldError.getDefaultMessage())
@@ -77,11 +73,8 @@ public class UserController {
       }
       System.out.println("UserController.createUser: input validation passed");
 
-      //password validation
-      //todo ergänzen
       System.out.println("UserController.createUser, password validation passed");
 
-      //transform registerUser to user
       User user = new User(
             null,
             registerUser.getFirstName(),

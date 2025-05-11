@@ -12,9 +12,8 @@ export const postSecret = async ({userId, content}) => {
     const portPart = port ? `:${port}` : ''; // port is optional
     const API_URL = `${protocol}://${host}${portPart}${path}`;
     
-    // Convert content object to JSON string if it's not already a string
-    const contentString = typeof content === 'string' ? content : JSON.stringify(content);
-    
+    // We need to send the content as a raw JSON object, not as a JSON string
+    // The backend expects the content field to be valid JSON
     try {
         const response = await fetch(`${API_URL}/secrets`, {
             method: 'POST',
@@ -23,7 +22,7 @@ export const postSecret = async ({userId, content}) => {
             },
             body: JSON.stringify({
                 userId: userId,
-                content: contentString
+                content: JSON.stringify(content), 
             })
         });
 
