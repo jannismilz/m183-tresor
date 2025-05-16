@@ -42,49 +42,59 @@ function NewCredential() {
     };
 
     return (
-        <div>
-            <h2>Add new credential secret</h2>
-            <form onSubmit={handleSubmit}>
-                <section>
-                    <aside>
-                        <div>
-                            <label>username:</label>
-                            <input
-                                type="text"
-                                value={credentialValues.userName}
-                                onChange={(e) =>
-                                    setCredentialValues(prevValues => ({...prevValues, userName: e.target.value}))}
-                                required
-                                placeholder="Please enter username"
-                            />
-                        </div>
-                        <div>
-                            <label>password:</label>
-                            <input
-                                type="password"
-                                value={credentialValues.password}
-                                onChange={(e) =>
-                                    setCredentialValues(prevValues => ({...prevValues, password: e.target.value}))}
-                                required
-                                placeholder="Please enter password"
-                            />
-                        </div>
-                        <div>
-                            <label>url:</label>
-                            <input
-                                type="text"
-                                value={credentialValues.url}
-                                onChange={(e) =>
-                                    setCredentialValues(prevValues => ({...prevValues, url: e.target.value}))}
-                                required
-                                placeholder="Please enter url"
-                            />
-                        </div>
-                        <button type="submit">save secret</button>
-                        {errorMessage && <p style={{color: 'red'}}>{errorMessage}</p>}
-                    </aside>
-                </section>
-            </form>
+        <div className="card">
+            <div className="card-body">
+                <h2 className="card-title">Add New Credential</h2>
+                {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
+                <form onSubmit={handleSubmit}>
+                    <div className="form-group">
+                        <label htmlFor="username">Username</label>
+                        <input
+                            id="username"
+                            type="text"
+                            value={credentialValues.userName}
+                            onChange={(e) =>
+                                setCredentialValues(prevValues => ({...prevValues, userName: e.target.value}))}
+                            required
+                            placeholder="Enter the username"
+                            className="mb-3"
+                        />
+                    </div>
+                    
+                    <div className="form-group">
+                        <label htmlFor="password">Password</label>
+                        <input
+                            id="password"
+                            type="password"
+                            value={credentialValues.password}
+                            onChange={(e) =>
+                                setCredentialValues(prevValues => ({...prevValues, password: e.target.value}))}
+                            required
+                            placeholder="Enter the password"
+                            className="mb-3"
+                        />
+                    </div>
+                    
+                    <div className="form-group">
+                        <label htmlFor="url">Website URL</label>
+                        <input
+                            id="url"
+                            type="url"
+                            value={credentialValues.url}
+                            onChange={(e) =>
+                                setCredentialValues(prevValues => ({...prevValues, url: e.target.value}))}
+                            required
+                            placeholder="Enter the website URL"
+                            className="mb-4"
+                        />
+                    </div>
+                    
+                    <div className="d-flex justify-content-between">
+                        <button type="button" className="btn btn-secondary" onClick={() => navigate('/secret/secrets')}>Cancel</button>
+                        <button type="submit" className="btn">Save Credential</button>
+                    </div>
+                </form>
+            </div>
         </div>
     );
 }

@@ -37,40 +37,42 @@ function LoginUser({loginValues, setLoginValues}) {
     };
 
     return (
-        <div>
-            <h2>Login user</h2>
-            <form onSubmit={handleSubmit}>
-                <section>
-                    <aside>
-                        <div>
-                            <label>Email:</label>
-                            <input
-                                type="text"
-                                value={loginValues.email}
-                                onChange={(e) =>
-                                    setLoginValues(prevValues => ({...prevValues, email: e.target.value}))}
-                                required
-                                placeholder="Please enter your email *"
-                            />
-                        </div>
-                        <div>
-                            <label>Password:</label>
-                            <input
-                                type="password"
-                                value={loginValues.password}
-                                onChange={(e) =>
-                                    setLoginValues(prevValues => ({...prevValues, password: e.target.value}))}
-                                required
-                                placeholder="Please enter your password *"
-                            />
-                        </div>
-                    </aside>
-                </section>
-                <button type="submit" disabled={isLoading}>
-                    {isLoading ? 'Logging in...' : 'Login'}
-                </button>
-                {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
-            </form>
+        <div className="card">
+            <div className="card-body">
+                <h2 className="card-title">Login</h2>
+                <form onSubmit={handleSubmit}>
+                    <div className="form-group">
+                        <label htmlFor="email">Email</label>
+                        <input
+                            id="email"
+                            type="email"
+                            value={loginValues.email}
+                            onChange={(e) =>
+                                setLoginValues(prevValues => ({...prevValues, email: e.target.value}))}
+                            required
+                            placeholder="Enter your email address"
+                            className="mb-3"
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="password">Password</label>
+                        <input
+                            id="password"
+                            type="password"
+                            value={loginValues.password}
+                            onChange={(e) =>
+                                setLoginValues(prevValues => ({...prevValues, password: e.target.value}))}
+                            required
+                            placeholder="Enter your password"
+                            className="mb-3"
+                        />
+                    </div>
+                    <button type="submit" className="btn w-100" disabled={isLoading}>
+                        {isLoading ? 'Logging in...' : 'Login'}
+                    </button>
+                    {errorMessage && <div className="alert alert-danger mt-3">{errorMessage}</div>}
+                </form>
+            </div>
         </div>
     );
 }

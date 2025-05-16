@@ -61,76 +61,89 @@ function RegisterUser({loginValues, setLoginValues}) {
     };
 
     return (
-        <div>
-            <h2>Register user</h2>
-            <form onSubmit={handleSubmit}>
-                <section>
-                <aside>
+        <div className="card">
+            <div className="card-body">
+                <h2 className="card-title">Register Account</h2>
+                {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
+                <form onSubmit={handleSubmit}>
                     <div>
-                        <label>Firstname:</label>
-                        <input
-                            type="text"
-                            value={credentials.firstName}
-                            onChange={(e) =>
-                                setCredentials(prevValues => ({...prevValues, firstName: e.target.value}))}
-                            required
-                            placeholder="Please enter your firstname *"
-                        />
+                        <div className="form-group w-100">
+                            <label htmlFor="firstName">First Name</label>
+                            <input
+                                id="firstName"
+                                type="text"
+                                value={credentials.firstName}
+                                onChange={(e) =>
+                                    setCredentials(prevValues => ({...prevValues, firstName: e.target.value}))}
+                                required
+                                placeholder="Enter your first name"
+                                className="mb-3"
+                            />
+                        </div>
+                        <div className="form-group w-100">
+                            <label htmlFor="lastName">Last Name</label>
+                            <input
+                                id="lastName"
+                                type="text"
+                                value={credentials.lastName}
+                                onChange={(e) =>
+                                    setCredentials(prevValues => ({...prevValues, lastName: e.target.value}))}
+                                required
+                                placeholder="Enter your last name"
+                                className="mb-3"
+                            />
+                        </div>
                     </div>
-                    <div>
-                        <label>Lastname:</label>
+                    
+                    <div className="form-group">
+                        <label htmlFor="email">Email</label>
                         <input
-                            type="text"
-                            value={credentials.lastName}
-                            onChange={(e) =>
-                                setCredentials(prevValues => ({...prevValues, lastName: e.target.value}))}
-                            required
-                            placeholder="Please enter your lastname *"
-                        />
-                    </div>
-                    <div>
-                        <label>Email:</label>
-                        <input
-                            type="text"
+                            id="email"
+                            type="email"
                             value={credentials.email}
                             onChange={(e) =>
                                 setCredentials(prevValues => ({...prevValues, email: e.target.value}))}
                             required
-                            placeholder="Please enter your email"
+                            placeholder="Enter your email address"
+                            className="mb-3"
                         />
                     </div>
-                </aside>
-                    <aside>
-                        <div>
-                            <label>Password:</label>
-                            <input
-                                type="password"
-                                value={credentials.password}
-                                onChange={(e) =>
-                                    setCredentials(prevValues => ({...prevValues, password: e.target.value}))}
-                                required
-                                placeholder="Please enter your pwd *"
-                            />
-                        </div>
-                        <div>
-                            <label>Password confirmation:</label>
-                            <input
-                                type="password"
-                                value={credentials.passwordConfirmation}
-                                onChange={(e) =>
-                                    setCredentials(prevValues => ({...prevValues, passwordConfirmation: e.target.value}))}
-                                required
-                                placeholder="Please confirm your pwd *"
-                            />
-                        </div>
-                    </aside>
-                </section>
-                <button type="submit" disabled={isLoading}>
-                    {isLoading ? 'Registering...' : 'Register'}
-                </button>
-                {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
-                <p>Already have an account? <a href="/user/login">Login here</a></p>
-            </form>
+                    
+                    <div className="form-group">
+                        <label htmlFor="password">Password</label>
+                        <input
+                            id="password"
+                            type="password"
+                            value={credentials.password}
+                            onChange={(e) =>
+                                setCredentials(prevValues => ({...prevValues, password: e.target.value}))}
+                            required
+                            placeholder="Create a password (min. 8 characters)"
+                            className="mb-3"
+                        />
+                    </div>
+                    
+                    <div className="form-group">
+                        <label htmlFor="passwordConfirmation">Confirm Password</label>
+                        <input
+                            id="passwordConfirmation"
+                            type="password"
+                            value={credentials.passwordConfirmation}
+                            onChange={(e) =>
+                                setCredentials(prevValues => ({...prevValues, passwordConfirmation: e.target.value}))}
+                            required
+                            placeholder="Confirm your password"
+                            className="mb-3"
+                        />
+                    </div>
+                    
+                    <button type="submit" className="btn w-100" disabled={isLoading}>
+                        {isLoading ? 'Registering...' : 'Create Account'}
+                    </button>
+                    
+                    <p className="text-center mt-3">Already have an account? <a href="/user/login">Login here</a></p>
+                </form>
+            </div>
         </div>
     );
 }

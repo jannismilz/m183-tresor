@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {BrowserRouter, Route, Routes, Navigate} from "react-router-dom";
 import { AuthProvider, useAuth } from './context/AuthContext';
 import './App.css';
-import './css/mvp.css';
+import './css/modern.css';
 import Home from './pages/Home';
 import Layout from "./pages/Layout";
 import NoPage from "./pages/NoPage";

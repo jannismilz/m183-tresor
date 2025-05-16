@@ -15,52 +15,64 @@ const Layout = ({loginValues}) => {
     };
     return (
         <>
-            <nav>
-                <h1>The secret tresor application</h1>
-                <p>
-                    {isAuthenticated 
-                        ? <>
-                            <span>Logged in as: <strong>{userEmail}</strong></span>
-                            <button onClick={handleLogout} style={{ marginLeft: '10px' }}>Logout</button>
-                          </>
-                        : 'Not logged in'}
-                </p>
-                <ul>
-                    <li><a href="/">Secrets</a>
-                    <ul>
-                        <li><Link to="/secret/secrets">my secrets</Link></li>
-                        <li><Link to="/secret/newcredential">new credential</Link></li>
-                        <li><Link to="/secret/newcreditcard">new credit-card</Link></li>
-                        <li><Link to="/secret/newnote">new note</Link></li>
-                    </ul>
-                    </li>
-                    <li><a href="/">User</a>
-                    <ul>
-                        {!isAuthenticated ? (
+            <header className="navbar">
+                <div className="navbar-container">
+                    <Link to="/" className="navbar-brand">The Secret Tresor</Link>
+                    
+                    <div className="navbar-user">
+                        {isAuthenticated ? (
                             <>
-                                <li><Link to="/user/login">login</Link></li>
-                                <li><Link to="/user/register">register</Link></li>
+                                <span>Logged in as: <strong>{userEmail}</strong></span>
+                                <button onClick={handleLogout} className="btn btn-sm">Logout</button>
                             </>
                         ) : (
-                            <li><button onClick={handleLogout}>logout</button></li>
+                            <span className="text-gray-600">Not logged in</span>
                         )}
-                    </ul>
-                    </li>
-                    <li><a href="/">Admin</a>
-                        <ul>
-                            <li><Link to="/user/users">All users</Link></li>
-                            <li>Add user</li>
-                            <li><Link to="/user/users/:id">Edit user</Link></li>
-                            <li>All secrets</li>
+                    </div>
+                    
+                    <nav>
+                        <ul className="navbar-nav">
+                            <li className="nav-item">
+                                <Link to="/" className="nav-link">Secrets</Link>
+                                <ul className="dropdown-menu">
+                                    <li><Link to="/secret/secrets" className="dropdown-item">My Secrets</Link></li>
+                                    <li><Link to="/secret/newcredential" className="dropdown-item">New Credential</Link></li>
+                                    <li><Link to="/secret/newcreditcard" className="dropdown-item">New Credit Card</Link></li>
+                                    <li><Link to="/secret/newnote" className="dropdown-item">New Note</Link></li>
+                                </ul>
+                            </li>
+                            <li className="nav-item">
+                                <Link to="/" className="nav-link">User</Link>
+                                <ul className="dropdown-menu">
+                                    {!isAuthenticated ? (
+                                        <>
+                                            <li><Link to="/user/login" className="dropdown-item">Login</Link></li>
+                                            <li><Link to="/user/register" className="dropdown-item">Register</Link></li>
+                                        </>
+                                    ) : (
+                                        <li><button onClick={handleLogout} className="dropdown-item">Logout</button></li>
+                                    )}
+                                </ul>
+                            </li>
+                            <li className="nav-item">
+                                <Link to="/" className="nav-link">Admin</Link>
+                                <ul className="dropdown-menu">
+                                    <li><Link to="/user/users" className="dropdown-item">All Users</Link></li>
+                                    <li><span className="dropdown-item">Add User</span></li>
+                                    <li><Link to="/user/users/:id" className="dropdown-item">Edit User</Link></li>
+                                    <li><span className="dropdown-item">All Secrets</span></li>
+                                </ul>
+                            </li>
+                            <li className="nav-item">
+                                <Link to="/" className="nav-link">About</Link>
+                            </li>
                         </ul>
-                    </li>
-                    <li>
-                        <Link to="/">About</Link>
-                    </li>
-                </ul>
-            </nav>
-            <hr/>
-            <Outlet/>
+                    </nav>
+                </div>
+            </header>
+            <main>
+                <Outlet/>
+            </main>
         </>
     )
 };
