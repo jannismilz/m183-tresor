@@ -62,7 +62,7 @@ const Secrets = () => {
                 <div className="card-body">
                     <div className="d-flex justify-content-between align-items-center mb-3">
                         <h3 className="card-title mb-0">Login Credential</h3>
-                        <span className="badge p-2" style={{ backgroundColor: '#4361ee', color: 'white' }}>ID: {secretId}</span>
+                        <span className="p-2" style={{ color: '#4361ee', fontWeight: '500' }}>ID: {secretId}</span>
                     </div>
                     <div className="d-flex gap-3 mb-2">
                         <div style={{ flex: '1' }}>
@@ -94,7 +94,7 @@ const Secrets = () => {
                 <div className="card-body" style={{ background: 'linear-gradient(135deg, #3f37c9 0%, #4cc9f0 100%)' }}>
                     <div className="d-flex justify-content-between align-items-center mb-4">
                         <h3 className="card-title mb-0" style={{ color: 'white' }}>Credit Card</h3>
-                        <span className="badge p-2" style={{ backgroundColor: 'rgba(255,255,255,0.2)', color: 'white' }}>ID: {secretId}</span>
+                        <span className="p-2" style={{ color: 'white', fontWeight: '500' }}>ID: {secretId}</span>
                     </div>
                     <div style={{ color: 'white' }}>
                         <p className="mb-1" style={{ fontSize: '0.875rem', opacity: 0.8 }}>Card Number</p>
@@ -129,7 +129,7 @@ const Secrets = () => {
                 <div className="card-body" style={{ backgroundColor: '#fffbeb', borderLeft: '4px solid #fbbf24' }}>
                     <div className="d-flex justify-content-between align-items-center mb-3">
                         <h3 className="card-title mb-0">{parsedContent.title}</h3>
-                        <span className="badge p-2" style={{ backgroundColor: '#fbbf24', color: 'white' }}>ID: {secretId}</span>
+                        <span className="p-2" style={{ color: '#fbbf24', fontWeight: '500' }}>ID: {secretId}</span>
                     </div>
                     <div style={{ backgroundColor: 'white', padding: '1rem', borderRadius: '0.375rem', minHeight: '100px' }}>
                         <p style={{ whiteSpace: 'pre-wrap' }}>{parsedContent.content}</p>
@@ -167,10 +167,64 @@ const Secrets = () => {
             <div className="card-body">
                 <div className="d-flex justify-content-between align-items-center mb-4">
                     <h1 className="card-title mb-0">My Secrets</h1>
-                    <div>
-                        <Link to="/secret/newcredential" className="btn btn-sm me-2">New Credential</Link>
-                        <Link to="/secret/newcreditcard" className="btn btn-sm me-2">New Credit Card</Link>
-                        <Link to="/secret/newnote" className="btn btn-sm">New Note</Link>
+                    <div className="d-flex gap-3">
+                        <Link 
+                            to="/secret/newcredential" 
+                            className="btn btn-sm" 
+                            style={{ 
+                                backgroundColor: '#4361ee', 
+                                color: 'white',
+                                transition: 'all 0.2s ease'
+                            }}
+                            onMouseOver={(e) => {
+                                e.currentTarget.style.backgroundColor = '#3a53d0';
+                                e.currentTarget.style.color = 'white';
+                            }}
+                            onMouseOut={(e) => {
+                                e.currentTarget.style.backgroundColor = '#4361ee';
+                                e.currentTarget.style.color = 'white';
+                            }}
+                        >
+                            New Credential
+                        </Link>
+                        <Link 
+                            to="/secret/newcreditcard" 
+                            className="btn btn-sm" 
+                            style={{ 
+                                backgroundColor: '#3f37c9', 
+                                color: 'white',
+                                transition: 'all 0.2s ease'
+                            }}
+                            onMouseOver={(e) => {
+                                e.currentTarget.style.backgroundColor = '#332ca6';
+                                e.currentTarget.style.color = 'white';
+                            }}
+                            onMouseOut={(e) => {
+                                e.currentTarget.style.backgroundColor = '#3f37c9';
+                                e.currentTarget.style.color = 'white';
+                            }}
+                        >
+                            New Credit Card
+                        </Link>
+                        <Link 
+                            to="/secret/newnote" 
+                            className="btn btn-sm" 
+                            style={{ 
+                                backgroundColor: '#fbbf24', 
+                                color: 'white',
+                                transition: 'all 0.2s ease'
+                            }}
+                            onMouseOver={(e) => {
+                                e.currentTarget.style.backgroundColor = '#e5ac1c';
+                                e.currentTarget.style.color = 'white';
+                            }}
+                            onMouseOut={(e) => {
+                                e.currentTarget.style.backgroundColor = '#fbbf24';
+                                e.currentTarget.style.color = 'white';
+                            }}
+                        >
+                            New Note
+                        </Link>
                     </div>
                 </div>
                 
