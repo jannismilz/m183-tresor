@@ -62,7 +62,7 @@ const Secrets = () => {
                 <div className="card-body">
                     <div className="d-flex justify-content-between align-items-center mb-3">
                         <h3 className="card-title mb-0">Login Credential</h3>
-                        <span className="p-2" style={{ color: '#4361ee', fontWeight: '500' }}>ID: {secretId}</span>
+                        <span className="p-2" style={{ color: '#000', fontWeight: '500' }}>ID: {secretId}</span>
                     </div>
                     <div className="d-flex gap-3 mb-2">
                         <div style={{ flex: '1' }}>
@@ -77,9 +77,6 @@ const Secrets = () => {
                     <div>
                         <p className="mb-1" style={{ color: '#6c757d', fontSize: '0.875rem' }}>Website</p>
                         <a href={parsedContent.url} target="_blank" rel="noopener noreferrer" className="d-block mb-3">{parsedContent.url}</a>
-                    </div>
-                    <div className="d-flex justify-content-end">
-                        <button className="btn btn-sm" style={{ backgroundColor: '#4cc9f0' }}>Copy Password</button>
                     </div>
                 </div>
             </div>
@@ -129,7 +126,7 @@ const Secrets = () => {
                 <div className="card-body" style={{ backgroundColor: '#fffbeb', borderLeft: '4px solid #fbbf24' }}>
                     <div className="d-flex justify-content-between align-items-center mb-3">
                         <h3 className="card-title mb-0">{parsedContent.title}</h3>
-                        <span className="p-2" style={{ color: '#fbbf24', fontWeight: '500' }}>ID: {secretId}</span>
+                        <span className="p-2" style={{ color: '#000', fontWeight: '500' }}>ID: {secretId}</span>
                     </div>
                     <div style={{ backgroundColor: 'white', padding: '1rem', borderRadius: '0.375rem', minHeight: '100px' }}>
                         <p style={{ whiteSpace: 'pre-wrap' }}>{parsedContent.content}</p>
