@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { loginUser } from '../../comunication/FetchUser';
 import { useAuth } from '../../context/AuthContext';
+import TurnstileWidget from '../../components/TurnstileWidget';
 
 /**
  * LoginUser
@@ -12,14 +13,25 @@ function LoginUser({loginValues, setLoginValues}) {
     const { login } = useAuth();
     const [errorMessage, setErrorMessage] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const [turnstileToken, setTurnstileToken] = useState('');
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setErrorMessage('');
         setIsLoading(true);
         
+        // Validate Turnstile token
+        if (!turnstileToken) {
+            setErrorMessage('Please complete the security check');
+            setIsLoading(false);
+            return;
+        }
+        
         try {
-            const response = await loginUser(loginValues);
+            const response = await loginUser({
+                ...loginValues,
+                turnstileToken
+            });
             // Use the login function from AuthContext
             login({
                 userId: response.userId,
@@ -67,7 +79,13 @@ function LoginUser({loginValues, setLoginValues}) {
                             className="mb-3"
                         />
                     </div>
-                    <button type="submit" className="btn w-100" disabled={isLoading}>
+                    
+                    {/* Cloudflare Turnstile Widget */}
+                    <div className="form-group">
+                        <TurnstileWidget onVerify={setTurnstileToken} />
+                    </div>
+                    
+                    <button type="submit" className="btn w-100" disabled={isLoading || !turnstileToken}>
                         {isLoading ? 'Logging in...' : 'Login'}
                     </button>
                     {errorMessage && <div className="alert alert-danger mt-3">{errorMessage}</div>}

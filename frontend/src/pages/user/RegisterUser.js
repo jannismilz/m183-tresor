@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {postUser} from "../../comunication/FetchUser";
+import TurnstileWidget from '../../components/TurnstileWidget';
 
 /**
  * RegisterUser
@@ -19,8 +20,8 @@ function RegisterUser({loginValues, setLoginValues}) {
     };
     const [credentials, setCredentials] = useState(initialState);
     const [errorMessage, setErrorMessage] = useState('');
-
     const [isLoading, setIsLoading] = useState(false);
+    const [turnstileToken, setTurnstileToken] = useState('');
     
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -41,9 +42,19 @@ function RegisterUser({loginValues, setLoginValues}) {
             setIsLoading(false);
             return;
         }
+        
+        // Validate Turnstile token
+        if (!turnstileToken) {
+            setErrorMessage('Please complete the security check');
+            setIsLoading(false);
+            return;
+        }
 
         try {
-            const response = await postUser(credentials);
+            const response = await postUser({
+                ...credentials,
+                turnstileToken
+            });
             console.log('Registration successful:', response);
             
             // Set login values for automatic login after registration
@@ -137,7 +148,12 @@ function RegisterUser({loginValues, setLoginValues}) {
                         />
                     </div>
                     
-                    <button type="submit" className="btn w-100" disabled={isLoading}>
+                    {/* Cloudflare Turnstile Widget */}
+                    <div className="form-group">
+                        <TurnstileWidget onVerify={setTurnstileToken} />
+                    </div>
+                    
+                    <button type="submit" className="btn w-100" disabled={isLoading || !turnstileToken}>
                         {isLoading ? 'Registering...' : 'Create Account'}
                     </button>
                     

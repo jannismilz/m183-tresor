@@ -53,7 +53,8 @@ export const postUser = async (content) => {
                 lastName: `${content.lastName}`,
                 email: `${content.email}`,
                 password: `${content.password}`,
-                passwordConfirmation: `${content.passwordConfirmation}`
+                passwordConfirmation: `${content.passwordConfirmation}`,
+                turnstileToken: content.turnstileToken // Include Turnstile token
             })
         });
 
@@ -86,7 +87,8 @@ export const loginUser = async (credentials) => {
             },
             body: JSON.stringify({
                 email: credentials.email,
-                password: credentials.password
+                password: credentials.password,
+                turnstileToken: credentials.turnstileToken // Include Turnstile token
             })
         });
 
