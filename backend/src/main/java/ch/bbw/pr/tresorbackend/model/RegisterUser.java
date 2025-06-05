@@ -29,5 +29,6 @@ public class RegisterUser {
    @NotEmpty (message="Password-confirmation is required.")
    private String passwordConfirmation;
 
-   private String recaptchaToken;
+   @NotEmpty(message="Security verification is required.")
+   private String turnstileToken;
 }

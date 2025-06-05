@@ -6,6 +6,7 @@ import ch.bbw.pr.tresorbackend.model.LoginRequest;
 import ch.bbw.pr.tresorbackend.model.RegisterUser;
 import ch.bbw.pr.tresorbackend.model.User;
 import ch.bbw.pr.tresorbackend.service.PasswordEncryptionService;
+import ch.bbw.pr.tresorbackend.service.TurnstileService;
 import ch.bbw.pr.tresorbackend.service.UserService;
 
 import com.google.gson.Gson;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * UserController
@@ -35,12 +37,14 @@ public class UserController {
 
    private UserService userService;
    private PasswordEncryptionService passwordService;
+   private TurnstileService turnstileService;
    private final ConfigProperties configProperties;
    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
    @Autowired
    public UserController(ConfigProperties configProperties, UserService userService,
-                         PasswordEncryptionService passwordService) {
+                         PasswordEncryptionService passwordService,
+                         TurnstileService turnstileService) {
       this.configProperties = configProperties;
       System.out.println("UserController.UserController: cross origin: " + configProperties.getOrigin());
       // Logging in the constructor
@@ -48,13 +52,26 @@ public class UserController {
       logger.debug("UserController.UserController: Cross Origin Config: {}", configProperties.getOrigin());
       this.userService = userService;
       this.passwordService = passwordService;
+      this.turnstileService = turnstileService;
    }
 
    // build create User REST API
    @CrossOrigin(origins = "${CROSS_ORIGIN}")
    @PostMapping
-   public ResponseEntity<String> createUser(@Valid @RequestBody RegisterUser registerUser, BindingResult bindingResult) {
-      System.out.println("UserController.createUser: captcha passed.");
+   public ResponseEntity<String> createUser(@Valid @RequestBody RegisterUser registerUser, BindingResult bindingResult, HttpServletRequest request) {
+      // Verify Turnstile token
+      String remoteIp = request.getRemoteAddr();
+      boolean turnstileVerified = turnstileService.verifyToken(registerUser.getTurnstileToken(), remoteIp);
+      
+      if (!turnstileVerified) {
+         logger.warn("Registration failed: Invalid Turnstile verification");
+         JsonObject obj = new JsonObject();
+         obj.addProperty("message", "Security verification failed. Please try again.");
+         String json = new Gson().toJson(obj);
+         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(json);
+      }
+      
+      logger.info("UserController.createUser: Turnstile verification passed.");
 
       if (bindingResult.hasErrors()) {
          List<String> errors = bindingResult.getFieldErrors().stream()
@@ -131,7 +148,18 @@ public class UserController {
 
    @CrossOrigin(origins = "${CROSS_ORIGIN}")
    @PostMapping("/login")
-   public ResponseEntity<String> login(@Valid @RequestBody LoginRequest loginRequest, BindingResult bindingResult) {
+   public ResponseEntity<String> login(@Valid @RequestBody LoginRequest loginRequest, BindingResult bindingResult, HttpServletRequest request) {
+      // Verify Turnstile token
+      String remoteIp = request.getRemoteAddr();
+      boolean turnstileVerified = turnstileService.verifyToken(loginRequest.getTurnstileToken(), remoteIp);
+      
+      if (!turnstileVerified) {
+         logger.warn("Login failed: Invalid Turnstile verification");
+         JsonObject obj = new JsonObject();
+         obj.addProperty("message", "Security verification failed. Please try again.");
+         String json = new Gson().toJson(obj);
+         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(json);
+      }
       // Input validation
       if (bindingResult.hasErrors()) {
          List<String> errors = bindingResult.getFieldErrors().stream()
