@@ -89,6 +89,15 @@ function LoginUser({loginValues, setLoginValues}) {
                         {isLoading ? 'Logging in...' : 'Login'}
                     </button>
                     {errorMessage && <div className="alert alert-danger mt-3">{errorMessage}</div>}
+                    
+                    <div className="text-center mt-3">
+                        <p>
+                            <a href="/user/forgot-password">Forgot your password?</a>
+                        </p>
+                        <p>
+                            Don't have an account? <a href="/user/register">Register here</a>
+                        </p>
+                    </div>
                 </form>
             </div>
         </div>

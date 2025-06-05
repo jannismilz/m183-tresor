@@ -9,6 +9,8 @@ import NoPage from "./pages/NoPage";
 import Users from './pages/user/Users';
 import LoginUser from "./pages/user/LoginUser";
 import RegisterUser from "./pages/user/RegisterUser";
+import ForgotPassword from "./pages/user/ForgotPassword";
+import ResetPassword from "./pages/user/ResetPassword";
 import Secrets from "./pages/secret/Secrets";
 import NewCredential from "./pages/secret/NewCredential";
 import NewCreditCard from "./pages/secret/NewCreditCard";
@@ -48,6 +50,8 @@ function App() {
                     <Route path="/user/users" element={<Users loginValues={loginValues}/>}/>
                     <Route path="/user/login" element={<LoginUser loginValues={loginValues} setLoginValues={setLoginValues}/>}/>
                     <Route path="/user/register" element={<RegisterUser loginValues={loginValues} setLoginValues={setLoginValues}/>}/>
+                    <Route path="/user/forgot-password" element={<ForgotPassword />}/>
+                    <Route path="/user/reset-password" element={<ResetPassword />}/>
                     <Route path="/secret/secrets" element={<ProtectedRoute><Secrets /></ProtectedRoute>}/>
                     <Route path="/secret/newcredential" element={<ProtectedRoute><NewCredential /></ProtectedRoute>}/>
                     <Route path="/secret/newcreditcard" element={<ProtectedRoute><NewCreditCard /></ProtectedRoute>}/>
