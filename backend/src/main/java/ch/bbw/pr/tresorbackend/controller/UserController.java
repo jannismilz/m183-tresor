@@ -90,6 +90,27 @@ public class UserController {
       }
       System.out.println("UserController.createUser: input validation passed");
 
+      // Additional password strength validation
+      String password = registerUser.getPassword();
+      String passwordRegex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?]).{8,}$";
+      
+      if (password.length() < 8 || !password.matches(passwordRegex)) {
+          logger.warn("Registration failed: Password does not meet strength requirements");
+          JsonObject obj = new JsonObject();
+          obj.addProperty("message", "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character.");
+          String json = new Gson().toJson(obj);
+          return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(json);
+      }
+      
+      // Validate password confirmation match
+      if (!password.equals(registerUser.getPasswordConfirmation())) {
+          logger.warn("Registration failed: Password and confirmation do not match");
+          JsonObject obj = new JsonObject();
+          obj.addProperty("message", "Password and password confirmation do not match.");
+          String json = new Gson().toJson(obj);
+          return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(json);
+      }
+      
       System.out.println("UserController.createUser, password validation passed");
 
       User user = new User(

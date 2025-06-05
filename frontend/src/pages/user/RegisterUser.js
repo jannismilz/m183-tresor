@@ -37,8 +37,22 @@ function RegisterUser({loginValues, setLoginValues}) {
         }
         
         // Validate password strength
+        // Password regex explanation:
+        // - at least one lowercase letter
+        // - at least one uppercase letter
+        // - at least one digit
+        // - at least one special character
+        // - at least 8 characters long
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/;
+        
         if(credentials.password.length < 8) {
             setErrorMessage('Password must be at least 8 characters long.');
+            setIsLoading(false);
+            return;
+        }
+        
+        if(!passwordRegex.test(credentials.password)) {
+            setErrorMessage('Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.');
             setIsLoading(false);
             return;
         }
@@ -129,7 +143,7 @@ function RegisterUser({loginValues, setLoginValues}) {
                             onChange={(e) =>
                                 setCredentials(prevValues => ({...prevValues, password: e.target.value}))}
                             required
-                            placeholder="Create a password (min. 8 characters)"
+                            placeholder="Create a strong password (min. 8 chars, uppercase, lowercase, number, special char)"
                             className="mb-3"
                         />
                     </div>
