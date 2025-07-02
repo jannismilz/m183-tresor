@@ -5,6 +5,7 @@ import ch.bbw.pr.tresorbackend.model.EmailAdress;
 import ch.bbw.pr.tresorbackend.model.LoginRequest;
 import ch.bbw.pr.tresorbackend.model.RegisterUser;
 import ch.bbw.pr.tresorbackend.model.User;
+import ch.bbw.pr.tresorbackend.service.EmailTwoFactorService;
 import ch.bbw.pr.tresorbackend.service.PasswordEncryptionService;
 import ch.bbw.pr.tresorbackend.service.TurnstileService;
 import ch.bbw.pr.tresorbackend.service.UserService;
@@ -167,6 +168,9 @@ public class UserController {
       return new ResponseEntity<>("User successfully deleted!", HttpStatus.OK);
    }
 
+   @Autowired
+   private EmailTwoFactorService emailTwoFactorService;
+
    @CrossOrigin(origins = "${CROSS_ORIGIN}")
    @PostMapping("/login")
    public ResponseEntity<String> login(@Valid @RequestBody LoginRequest loginRequest, BindingResult bindingResult, HttpServletRequest request) {
@@ -216,12 +220,24 @@ public class UserController {
          return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(json);
       }
 
-      // Login successful
+      // Password is correct, now send 2FA code via email
+      boolean codeSent = emailTwoFactorService.generateAndSendVerificationCode(user.getId());
+      
+      if (!codeSent) {
+         JsonObject obj = new JsonObject();
+         obj.addProperty("message", "Failed to send verification code");
+         String json = new Gson().toJson(obj);
+         logger.error("Failed to send 2FA code for user: " + loginRequest.getEmail());
+         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(json);
+      }
+      
+      // Return success with 2FA required flag
       JsonObject obj = new JsonObject();
-      obj.addProperty("message", "Login successful");
+      obj.addProperty("message", "2FA verification required");
       obj.addProperty("userId", user.getId());
+      obj.addProperty("requiresTwoFactor", true);
       String json = new Gson().toJson(obj);
-      logger.info("Login successful for user: " + loginRequest.getEmail());
+      logger.info("Login credentials verified, 2FA required for user: " + loginRequest.getEmail());
       return ResponseEntity.ok(json);
    }
 

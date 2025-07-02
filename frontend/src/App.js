@@ -15,6 +15,7 @@ import Secrets from "./pages/secret/Secrets";
 import NewCredential from "./pages/secret/NewCredential";
 import NewCreditCard from "./pages/secret/NewCreditCard";
 import NewNote from "./pages/secret/NewNote";
+import TwoFactorVerification from "./components/auth/TwoFactorVerification";
 
 // Protected route component
 const ProtectedRoute = ({ children }) => {
@@ -52,6 +53,7 @@ function App() {
                     <Route path="/user/register" element={<RegisterUser loginValues={loginValues} setLoginValues={setLoginValues}/>}/>
                     <Route path="/user/forgot-password" element={<ForgotPassword />}/>
                     <Route path="/user/reset-password" element={<ResetPassword />}/>
+                    <Route path="/two-factor-verification" element={<TwoFactorVerification />}/>
                     <Route path="/secret/secrets" element={<ProtectedRoute><Secrets /></ProtectedRoute>}/>
                     <Route path="/secret/newcredential" element={<ProtectedRoute><NewCredential /></ProtectedRoute>}/>
                     <Route path="/secret/newcreditcard" element={<ProtectedRoute><NewCreditCard /></ProtectedRoute>}/>
