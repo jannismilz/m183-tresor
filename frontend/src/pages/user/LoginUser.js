@@ -36,9 +36,12 @@ function LoginUser({loginValues, setLoginValues}) {
             // Check if 2FA verification is required
             if (response.requiresTwoFactor) {
                 console.log('2FA required, redirecting to verification page');
+                // Store email temporarily for the verification process
+                localStorage.setItem('tempUserEmail', loginValues.email);
+                
                 // Redirect to 2FA verification page with userId
                 navigate('/two-factor-verification', { 
-                    state: { userId: response.userId } 
+                    state: { userId: response.userId, email: loginValues.email } 
                 });
                 return;
             }

@@ -13,7 +13,7 @@ const TwoFactorVerification = () => {
   
   const navigate = useNavigate();
   const location = useLocation();
-  const { userId } = location.state || {};
+  const { userId, email } = location.state || {};
   const { login } = useAuth();
   
   useEffect(() => {
@@ -59,9 +59,12 @@ const TwoFactorVerification = () => {
         // Login the user using AuthContext
         login({
           userId: userId,
-          // We don't have the email here, but it's stored in localStorage during the initial login
-          email: localStorage.getItem('userEmail') || ''
+          // Get email from location state or from temporary localStorage
+          email: email || localStorage.getItem('tempUserEmail') || ''
         });
+        
+        // Clean up temporary email storage
+        localStorage.removeItem('tempUserEmail');
         
         // Redirect to dashboard on successful verification
         navigate('/');
