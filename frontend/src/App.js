@@ -16,6 +16,7 @@ import NewCredential from "./pages/secret/NewCredential";
 import NewCreditCard from "./pages/secret/NewCreditCard";
 import NewNote from "./pages/secret/NewNote";
 import TwoFactorVerification from "./components/auth/TwoFactorVerification";
+import OAuth2Redirect from "./components/auth/OAuth2Redirect";
 
 // Protected route component
 const ProtectedRoute = ({ children }) => {
@@ -48,12 +49,15 @@ function App() {
                 <Routes>
                     <Route path="/" element={<Layout loginValues={loginValues}/>}>
                     <Route index element={<Home/>}/>
-                    <Route path="/user/users" element={<Users loginValues={loginValues}/>}/>
-                    <Route path="/user/login" element={<LoginUser loginValues={loginValues} setLoginValues={setLoginValues}/>}/>
-                    <Route path="/user/register" element={<RegisterUser loginValues={loginValues} setLoginValues={setLoginValues}/>}/>
-                    <Route path="/user/forgot-password" element={<ForgotPassword />}/>
-                    <Route path="/user/reset-password" element={<ResetPassword />}/>
-                    <Route path="/two-factor-verification" element={<TwoFactorVerification />}/>
+                    <Route path="two-factor-verification" element={<TwoFactorVerification />} />
+                    <Route path="oauth2/redirect" element={<OAuth2Redirect />} />
+                    <Route path="user">
+                        <Route path="users" element={<Users loginValues={loginValues}/>}/>
+                        <Route path="login" element={<LoginUser loginValues={loginValues} setLoginValues={setLoginValues}/>}/>
+                        <Route path="register" element={<RegisterUser loginValues={loginValues} setLoginValues={setLoginValues}/>}/>
+                        <Route path="forgot-password" element={<ForgotPassword/>}/>
+                        <Route path="reset-password" element={<ResetPassword/>}/>
+                    </Route>
                     <Route path="/secret/secrets" element={<ProtectedRoute><Secrets /></ProtectedRoute>}/>
                     <Route path="/secret/newcredential" element={<ProtectedRoute><NewCredential /></ProtectedRoute>}/>
                     <Route path="/secret/newcreditcard" element={<ProtectedRoute><NewCreditCard /></ProtectedRoute>}/>

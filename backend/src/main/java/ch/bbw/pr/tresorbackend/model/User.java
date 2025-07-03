@@ -32,4 +32,16 @@ public class User {
 
    @Column(nullable = false)
    private String password;
+   
+   @Column(name = "two_factor_enabled")
+   private Boolean twoFactorEnabled;
+   
+   @Column(name = "two_factor_secret")
+   private String twoFactorSecret;
+   
+   @Column(name = "oauth_provider")
+   private String oauthProvider;
+   
+   @Column(name = "oauth_id")
+   private String oauthId;
 }

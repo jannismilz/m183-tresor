@@ -23,6 +23,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import jakarta.servlet.http.HttpServletRequest;
@@ -119,8 +120,12 @@ public class UserController {
             registerUser.getFirstName(),
             registerUser.getLastName(),
             registerUser.getEmail(),
-            passwordService.hashPassword(registerUser.getPassword())
-            );
+            passwordService.hashPassword(registerUser.getPassword()),
+            false,
+            null,
+            null,
+            null
+      );
 
       User savedUser = userService.createUser(user);
       System.out.println("UserController.createUser, user saved in db");
