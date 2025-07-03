@@ -36,9 +36,9 @@ export const getGoogleOAuthURL = () => {
 
 /**
  * Handle Google OAuth2 callback
- * Exchanges authorization code for user information via backend
+ * Exchanges authorization code for user information and JWT token via backend
  * @param {string} code - The authorization code from Google
- * @returns {Promise<Object>} User data from the backend
+ * @returns {Promise<Object>} User data and JWT token from the backend
  */
 export const handleGoogleCallback = async (code) => {
   try {
@@ -58,6 +58,15 @@ export const handleGoogleCallback = async (code) => {
     
     console.log('Received response from backend:', response.status);
     const data = await response.json();
+    
+    // Store JWT token in localStorage if it exists in the response
+    if (data.token) {
+      console.log('JWT token received from backend');
+      localStorage.setItem('token', data.token);
+    } else {
+      console.warn('No JWT token received from backend');
+    }
+    
     return data;
   } catch (error) {
     console.error('Error handling Google callback:', error);

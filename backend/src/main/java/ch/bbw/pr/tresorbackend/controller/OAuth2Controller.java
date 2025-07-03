@@ -2,6 +2,7 @@ package ch.bbw.pr.tresorbackend.controller;
 
 import ch.bbw.pr.tresorbackend.model.ConfigProperties;
 import ch.bbw.pr.tresorbackend.model.User;
+import ch.bbw.pr.tresorbackend.security.JwtUtil;
 import ch.bbw.pr.tresorbackend.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +32,7 @@ public class OAuth2Controller {
     private final RestTemplate restTemplate;
     private final UserService userService;
     private final ConfigProperties configProperties;
+    private final JwtUtil jwtUtil;
     
     @Value("${spring.security.oauth2.client.registration.google.client-id}")
     private String clientId;
@@ -41,10 +43,11 @@ public class OAuth2Controller {
     @Value("${app.oauth2.redirectUri}")
     private String redirectUri;
     
-    public OAuth2Controller(RestTemplate restTemplate, UserService userService, ConfigProperties configProperties) {
+    public OAuth2Controller(RestTemplate restTemplate, UserService userService, ConfigProperties configProperties, JwtUtil jwtUtil) {
         this.restTemplate = restTemplate;
         this.userService = userService;
         this.configProperties = configProperties;
+        this.jwtUtil = jwtUtil;
     }
     
     /**
@@ -146,8 +149,12 @@ public class OAuth2Controller {
                 logger.info("Existing user logged in via Google OAuth: {}", email);
             }
             
+            // Generate JWT token
+            String token = jwtUtil.generateToken(user.getId(), user.getEmail());
+            
             // Return user info for frontend
             response.put("success", true);
+            response.put("token", token);
             response.put("userId", user.getId());
             response.put("email", user.getEmail());
             response.put("picture", picture);

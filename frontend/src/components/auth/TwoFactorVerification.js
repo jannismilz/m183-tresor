@@ -55,21 +55,27 @@ const TwoFactorVerification = () => {
     setError('');
     
     try {
+      // Get temporary token if available
+      const tempToken = localStorage.getItem('tempAuthToken');
+      
       const response = await verifyTwoFactorCode({
         userId,
-        code: verificationCode
+        code: verificationCode,
+        token: tempToken // Include token if available
       });
       
       if (response.verified) {
-        // Login the user using AuthContext
+        // Login the user using AuthContext with JWT token
         login({
           userId: userId,
           // Get email from location state or from temporary localStorage
-          email: email || localStorage.getItem('tempUserEmail') || ''
+          email: email || localStorage.getItem('tempUserEmail') || '',
+          token: response.token || tempToken // Use new token from response or existing temp token
         });
         
-        // Clean up temporary email storage
+        // Clean up temporary storage
         localStorage.removeItem('tempUserEmail');
+        localStorage.removeItem('tempAuthToken');
         
         // Redirect to dashboard on successful verification
         navigate('/');
@@ -88,7 +94,10 @@ const TwoFactorVerification = () => {
     setError('');
     
     try {
-      await requestNewVerificationCode(userId);
+      // Get temporary token if available
+      const tempToken = localStorage.getItem('tempAuthToken');
+      
+      await requestNewVerificationCode(userId, tempToken);
       setResendDisabled(true);
       setCountdown(300); // Reset countdown to 5 minutes
     } catch (err) {

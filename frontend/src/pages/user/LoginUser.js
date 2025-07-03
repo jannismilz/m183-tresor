@@ -40,6 +40,12 @@ function LoginUser({loginValues, setLoginValues}) {
                 // Store email temporarily for the verification process
                 localStorage.setItem('tempUserEmail', loginValues.email);
                 
+                // Store the JWT token for the 2FA process if available
+                if (response.token) {
+                    // We'll use this token for the 2FA verification
+                    localStorage.setItem('tempAuthToken', response.token);
+                }
+                
                 // Redirect to 2FA verification page with userId
                 navigate('/two-factor-verification', { 
                     state: { userId: response.userId, email: loginValues.email } 
@@ -50,7 +56,8 @@ function LoginUser({loginValues, setLoginValues}) {
             // If no 2FA required (shouldn't happen as per requirements)
             login({
                 userId: response.userId,
-                email: loginValues.email
+                email: loginValues.email,
+                token: response.token // Include the JWT token
             });
             
             console.log('Login successful', response);

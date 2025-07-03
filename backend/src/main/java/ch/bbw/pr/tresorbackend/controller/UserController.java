@@ -5,6 +5,7 @@ import ch.bbw.pr.tresorbackend.model.EmailAdress;
 import ch.bbw.pr.tresorbackend.model.LoginRequest;
 import ch.bbw.pr.tresorbackend.model.RegisterUser;
 import ch.bbw.pr.tresorbackend.model.User;
+import ch.bbw.pr.tresorbackend.security.JwtUtil;
 import ch.bbw.pr.tresorbackend.service.EmailTwoFactorService;
 import ch.bbw.pr.tresorbackend.service.PasswordEncryptionService;
 import ch.bbw.pr.tresorbackend.service.TurnstileService;
@@ -42,11 +43,13 @@ public class UserController {
    private TurnstileService turnstileService;
    private final ConfigProperties configProperties;
    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
+   private JwtUtil jwtUtil;
 
    @Autowired
    public UserController(ConfigProperties configProperties, UserService userService,
                          PasswordEncryptionService passwordService,
-                         TurnstileService turnstileService) {
+                         TurnstileService turnstileService,
+                         JwtUtil jwtUtil) {
       this.configProperties = configProperties;
       System.out.println("UserController.UserController: cross origin: " + configProperties.getOrigin());
       // Logging in the constructor
@@ -55,6 +58,7 @@ public class UserController {
       this.userService = userService;
       this.passwordService = passwordService;
       this.turnstileService = turnstileService;
+      this.jwtUtil = jwtUtil;
    }
 
    // build create User REST API
@@ -236,11 +240,15 @@ public class UserController {
          return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(json);
       }
       
-      // Return success with 2FA required flag
+      // Generate JWT token for 2FA verification (short-lived token with limited claims)
+      String token = jwtUtil.generateToken(user.getId(), user.getEmail());
+      
+      // Return success with 2FA required flag and token
       JsonObject obj = new JsonObject();
       obj.addProperty("message", "2FA verification required");
       obj.addProperty("userId", user.getId());
       obj.addProperty("requiresTwoFactor", true);
+      obj.addProperty("token", token);
       String json = new Gson().toJson(obj);
       logger.info("Login credentials verified, 2FA required for user: " + loginRequest.getEmail());
       return ResponseEntity.ok(json);

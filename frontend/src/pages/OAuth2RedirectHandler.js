@@ -34,12 +34,12 @@ function OAuth2RedirectHandler() {
                     throw new Error(response.error || 'Authentication failed');
                 }
 
-                // Login the user
+                // Login the user with JWT token
                 login({
                     userId: response.userId,
                     email: response.email,
-                    name: response.name,
-                    picture: response.picture
+                    picture: response.picture,
+                    token: response.token // Include the JWT token
                 });
 
                 // Redirect to home page
