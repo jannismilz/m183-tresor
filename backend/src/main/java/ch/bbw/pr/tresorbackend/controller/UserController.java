@@ -128,7 +128,8 @@ public class UserController {
             false,
             null,
             null,
-            null
+            null,
+              "user"
       );
 
       User savedUser = userService.createUser(user);
@@ -241,7 +242,7 @@ public class UserController {
       }
       
       // Generate JWT token for 2FA verification (short-lived token with limited claims)
-      String token = jwtUtil.generateToken(user.getId(), user.getEmail());
+      String token = jwtUtil.generateToken(user.getId(), user.getEmail(), user.getRole());
       
       // Return success with 2FA required flag and token
       JsonObject obj = new JsonObject();

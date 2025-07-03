@@ -29,6 +29,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String userId = null;
         String email = null;
+        String role = null;
         String jwt = null;
         
         // Check if Authorization header exists and starts with "Bearer "
@@ -37,6 +38,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             try {
                 userId = jwtUtil.extractUserId(jwt);
                 email = jwtUtil.extractEmail(jwt);
+                role = jwtUtil.extractRole(jwt);
             } catch (Exception e) {
                 logger.error("Error extracting claims from JWT", e);
             }
@@ -45,8 +47,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         // If we found a valid token, set up Spring Security context
         if (userId != null && email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             if (jwtUtil.validateToken(jwt)) {
+                // Convert role to uppercase for Spring Security convention
+                String authority = role != null ? role.toUpperCase() : "USER";
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                        userId, null, Collections.singletonList(new SimpleGrantedAuthority("USER")));
+                        userId, null, Collections.singletonList(new SimpleGrantedAuthority(authority)));
                 
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authToken);

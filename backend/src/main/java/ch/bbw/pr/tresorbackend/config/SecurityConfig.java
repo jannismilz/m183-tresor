@@ -44,6 +44,10 @@ public class SecurityConfig {
                     "/api/2fa/verify-code",
                     "/api/2fa/send-code"
                 ).permitAll()
+                // Admin endpoints require ADMIN role
+                .requestMatchers(
+                    "/api/admin/**"
+                ).hasAuthority("ADMIN")
                 // All other endpoints require authentication
                 .anyRequest().authenticated()
             )

@@ -6,8 +6,9 @@ import { useAuth } from "../context/AuthContext";
  * @author Peter Rutschmann
  */
 const Layout = ({loginValues}) => {
-    const { isAuthenticated, userEmail, logout } = useAuth();
+    const { isAuthenticated, userEmail, userRole, logout } = useAuth();
     const navigate = useNavigate();
+    const isAdmin = userRole === 'admin';
     
     const handleLogout = () => {
         logout();
@@ -54,15 +55,18 @@ const Layout = ({loginValues}) => {
                                     )}
                                 </ul>
                             </li>
-                            <li className="nav-item">
-                                <Link to="/" className="nav-link">Admin</Link>
-                                <ul className="dropdown-menu">
-                                    <li><Link to="/user/users" className="dropdown-item">All Users</Link></li>
-                                    <li><span className="dropdown-item">Add User</span></li>
-                                    <li><Link to="/user/users/:id" className="dropdown-item">Edit User</Link></li>
-                                    <li><span className="dropdown-item">All Secrets</span></li>
-                                </ul>
-                            </li>
+                            {isAdmin && (
+                                <li className="nav-item">
+                                    <Link to="/" className="nav-link">Admin</Link>
+                                    <ul className="dropdown-menu">
+                                        <li><Link to="/admin/dashboard" className="dropdown-item">Dashboard</Link></li>
+                                        <li><Link to="/user/users" className="dropdown-item">All Users</Link></li>
+                                        <li><span className="dropdown-item">Add User</span></li>
+                                        <li><Link to="/user/users/:id" className="dropdown-item">Edit User</Link></li>
+                                        <li><span className="dropdown-item">All Secrets</span></li>
+                                    </ul>
+                                </li>
+                            )}
                             <li className="nav-item">
                                 <Link to="/" className="nav-link">About</Link>
                             </li>

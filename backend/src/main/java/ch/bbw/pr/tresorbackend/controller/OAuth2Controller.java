@@ -150,7 +150,7 @@ public class OAuth2Controller {
             }
             
             // Generate JWT token
-            String token = jwtUtil.generateToken(user.getId(), user.getEmail());
+            String token = jwtUtil.generateToken(user.getId(), user.getEmail(), user.getRole());
             
             // Return user info for frontend
             response.put("success", true);

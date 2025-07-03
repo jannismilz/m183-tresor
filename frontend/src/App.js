@@ -17,6 +17,7 @@ import NewCreditCard from "./pages/secret/NewCreditCard";
 import NewNote from "./pages/secret/NewNote";
 import TwoFactorVerification from "./components/auth/TwoFactorVerification";
 import OAuth2Redirect from "./components/auth/OAuth2Redirect";
+import AdminDashboard from "./pages/admin/AdminDashboard";
 
 // Protected route component
 const ProtectedRoute = ({ children }) => {
@@ -28,6 +29,26 @@ const ProtectedRoute = ({ children }) => {
     
     if (!isAuthenticated) {
         return <Navigate to="/user/login" />;
+    }
+    
+    return children;
+};
+
+// Admin protected route component
+const AdminProtectedRoute = ({ children }) => {
+    const { isAuthenticated, loading, userRole } = useAuth();
+    
+    if (loading) {
+        return <div>Loading...</div>;
+    }
+    
+    if (!isAuthenticated) {
+        return <Navigate to="/user/login" />;
+    }
+    
+    if (userRole !== 'admin') {
+        // Redirect to home page if user is not an admin
+        return <Navigate to="/" />;
     }
     
     return children;
@@ -62,6 +83,7 @@ function App() {
                     <Route path="/secret/newcredential" element={<ProtectedRoute><NewCredential /></ProtectedRoute>}/>
                     <Route path="/secret/newcreditcard" element={<ProtectedRoute><NewCreditCard /></ProtectedRoute>}/>
                     <Route path="/secret/newnote" element={<ProtectedRoute><NewNote /></ProtectedRoute>}/>
+                    <Route path="/admin/dashboard" element={<AdminProtectedRoute><AdminDashboard /></AdminProtectedRoute>}/>
                     <Route path="*" element={<NoPage/>}/>
                 </Route>
             </Routes>

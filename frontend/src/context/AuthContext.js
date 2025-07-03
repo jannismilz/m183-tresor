@@ -10,6 +10,7 @@ export const AuthProvider = ({ children }) => {
   const [isOAuthUser, setIsOAuthUser] = useState(false);
   const [token, setToken] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [userRole, setUserRole] = useState('user');
 
   useEffect(() => {
     // Check if user is authenticated on component mount by checking for JWT token
@@ -24,6 +25,7 @@ export const AuthProvider = ({ children }) => {
         setIsAuthenticated(true);
         setUserId(payload.userId);
         setUserEmail(payload.email);
+        setUserRole(payload.role || 'user');
         setToken(storedToken);
         
         // Get additional info from localStorage if available
@@ -57,6 +59,7 @@ export const AuthProvider = ({ children }) => {
         const payload = JSON.parse(atob(userData.token.split('.')[1]));
         setUserId(payload.userId);
         setUserEmail(payload.email);
+        setUserRole(payload.role || 'user');
       } catch (error) {
         console.error('Error parsing JWT token:', error);
         // Use provided values as fallback
@@ -95,6 +98,7 @@ export const AuthProvider = ({ children }) => {
     setUserPicture('');
     setIsOAuthUser(false);
     setToken(null);
+    setUserRole('user');
   };
 
   // Function to get the authorization header for API requests
@@ -111,6 +115,7 @@ export const AuthProvider = ({ children }) => {
       isOAuthUser, 
       loading,
       token,
+      userRole,
       getAuthHeader,
       login, 
       logout 

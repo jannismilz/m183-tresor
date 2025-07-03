@@ -44,4 +44,7 @@ public class User {
    
    @Column(name = "oauth_id")
    private String oauthId;
+   
+   @Column(name = "role", nullable = false, columnDefinition = "varchar(10) default 'user'")
+   private String role = "user";
 }
